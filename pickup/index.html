@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>School Pickup 357</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: #08ffff;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Full-viewport centered container */
+    .wrap {
+      height: 100vh;
+      display: flex;
+      align-items: center;   /* vertical center */
+      justify-content: center;
+    }
+
+    /* The text itself (no distortion; font-size set by JS) */
+    #fit {
+      width: 100vw;
+      white-space: nowrap;
+      font-weight: 800;
+      line-height: 1;
+      text-align: center;
+      overflow: hidden;
+      /* small padding reduces edge clipping on some fonts */
+      padding: 0 1vw;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div id="fit">357</div>
+  </div>
+
+  <script>
+    const el = document.getElementById('fit');
+
+    function fitText() {
+      const w = el.clientWidth;
+
+      // Binary search for largest font-size that still fits horizontally
+      let lo = 1, hi = 4000; // px
+      while (lo < hi) {
+        const mid = Math.ceil((lo + hi) / 2);
+        el.style.fontSize = mid + "px";
+        if (el.scrollWidth <= w) lo = mid;
+        else hi = mid - 1;
+      }
+      el.style.fontSize = lo + "px";
+    }
+
+    addEventListener("resize", fitText);
+    fitText();
+  </script>
+</body>
+</html>
