@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>School Pickup 357</title>
+  <title>School Pickup 264</title>
   <style>
     html, body { height: 100%; margin: 0; }
     body {
@@ -12,52 +12,68 @@
       overflow: hidden;
     }
 
-    /* Full-viewport centered container */
     .wrap {
-      height: 100vh;
+      min-height: 100vh;
+      min-height: 100dvh;
+      box-sizing: border-box;
+      padding: 2vh 2vw;
       display: flex;
-      align-items: center;   /* vertical center */
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
+      text-align: center;
     }
-
-    /* The text itself (no distortion; font-size set by JS) */
+    .name {
+      flex: 0 0 auto;
+      font-size: clamp(1.25rem, 5vw, 4rem);
+      line-height: 1.1;
+      white-space: nowrap;
+    }
     #fit {
-      width: 100vw;
+      flex: 0 1 auto;
+      width: 100%;
       white-space: nowrap;
       font-weight: 800;
       line-height: 1;
-      text-align: center;
       overflow: hidden;
-      /* small padding reduces edge clipping on some fonts */
-      padding: 0 1vw;
-      box-sizing: border-box;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
+  <main class="wrap">
+    <div class="name">Zach &amp; Jacob <strong>STANEK</strong></div>
     <div id="fit">264</div>
-  </div>
+  </main>
 
   <script>
-    const el = document.getElementById('fit');
+    const wrap = document.querySelector('.wrap');
+    const name = document.querySelector('.name');
+    const number = document.getElementById('fit');
 
     function fitText() {
-      const w = el.clientWidth;
+      const styles = getComputedStyle(wrap);
+      const verticalPadding = parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom);
+      const availableWidth = wrap.clientWidth;
+      const availableHeight = wrap.clientHeight - verticalPadding - name.offsetHeight;
 
-      // Binary search for largest font-size that still fits horizontally
-      let lo = 1, hi = 4000; // px
+      let lo = 1;
+      let hi = 4000;
       while (lo < hi) {
         const mid = Math.ceil((lo + hi) / 2);
-        el.style.fontSize = mid + "px";
-        if (el.scrollWidth <= w) lo = mid;
-        else hi = mid - 1;
+        number.style.fontSize = mid + 'px';
+        if (number.scrollWidth <= availableWidth && number.scrollHeight <= availableHeight) {
+          lo = mid;
+        } else {
+          hi = mid - 1;
+        }
       }
-      el.style.fontSize = lo + "px";
+      number.style.fontSize = lo + 'px';
     }
 
-    addEventListener("resize", fitText);
+    addEventListener('resize', fitText);
+    addEventListener('orientationchange', fitText);
+    new ResizeObserver(fitText).observe(wrap);
     fitText();
   </script>
 </body>
